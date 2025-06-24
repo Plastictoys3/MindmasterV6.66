@@ -1,24 +1,20 @@
-﻿const canvas = document.getElementById("hallway");
+const canvas = document.getElementById("hallway");
 const ctx = canvas.getContext("2d");
 const note = document.getElementById("note");
-
 
 const wakeupScene = document.getElementById("wakeupScene");
 const wakeupText = document.getElementById("wakeupText");
 const wakeupBtn = document.getElementById("wakeupBtn");
 
-
 const introScene = document.getElementById("introScene");
 const introText = document.getElementById("introText");
 const surveyOptions = document.getElementById("surveyOptions");
-
 
 let currentRoom = 0;
 let hasJumped = false;
 let endingTriggered = false;
 let inFinalScene = false;
 let mirrorDistortion = 0;
-
 
 // ---- Wake-Up Sequence ----
 const wakeupLines = [
@@ -30,7 +26,6 @@ const wakeupLines = [
 ];
 let wakeupIndex = 0;
 
-
 wakeupBtn.addEventListener("click", () => {
   wakeupIndex++;
   if (wakeupIndex < wakeupLines.length) {
@@ -41,7 +36,6 @@ wakeupBtn.addEventListener("click", () => {
     showIntroQuestion();
   }
 });
-
 
 // ---- Survey Logic ----
 const surveyQuestions = [
@@ -59,15 +53,12 @@ const surveyQuestions = [
   }
 ];
 
-
 let currentQuestion = 0;
-
 
 function showIntroQuestion() {
   const q = surveyQuestions[currentQuestion];
   introText.textContent = q.prompt;
   surveyOptions.innerHTML = "";
-
 
   q.options.forEach(option => {
     const btn = document.createElement("button");
@@ -85,7 +76,6 @@ function showIntroQuestion() {
   });
 }
 
-
 function triggerSurveyJumpscare() {
   introText.textContent = "👁 JUMPSCARE: IT SAW YOU.";
   surveyOptions.innerHTML = "";
@@ -97,18 +87,15 @@ function triggerSurveyJumpscare() {
   }, 2000);
 }
 
-
 // ---- Hallway Logic ----
 function drawHallway() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = "#121212";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-
   ctx.fillStyle = "lime";
   ctx.font = "16px monospace";
   ctx.fillText(`Room ${currentRoom + 1} of 10`, 10, 20);
-
 
   if (currentRoom === 2) drawScrambledPainting();
   if (currentRoom === 4) drawMirror();
@@ -128,11 +115,9 @@ function drawHallway() {
     ctx.fillText("Press W to jump.", 320, 210);
   }
 
-
   ctx.fillStyle = "rgba(0,0,0,0.4)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
-
 
 function drawScrambledPainting() {
   for (let i = 0; i < 500; i++) {
@@ -145,7 +130,6 @@ function drawScrambledPainting() {
   ctx.fillText("Distorted Painting", 340, 280);
 }
 
-
 function drawMirror(distorted = false) {
   let r = distorted ? 200 : 100;
   ctx.fillStyle = `rgba(${r},${r},${r},0.7)`;
@@ -154,17 +138,14 @@ function drawMirror(distorted = false) {
   ctx.fillText("Mirror", 540, 210);
 }
 
-
 function flashNote(message) {
   note.textContent = message;
   note.style.display = "block";
   setTimeout(() => note.style.display = "none", 2500);
 }
 
-
 document.addEventListener("keydown", (e) => {
   if (inFinalScene || wakeupScene.style.display !== "none" || introScene.style.display !== "none") return;
-
 
   if (['w', 'a', 's', 'd'].includes(e.key)) {
     if (currentRoom < 9) {
@@ -177,8 +158,7 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-
-// ---- Final Scene Logic ----
+// ---- Ending: Final Scene ----
 function triggerFinale() {
   inFinalScene = true;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -189,7 +169,6 @@ function triggerFinale() {
   ctx.fillText("You stand before a bottomless pit.", 200, 200);
   ctx.fillText("Press W to jump.", 270, 230);
 
-
   document.addEventListener("keydown", function handleFall(e) {
     if (e.key === "w") {
       document.removeEventListener("keydown", handleFall);
@@ -198,7 +177,47 @@ function triggerFinale() {
   });
 }
 
-
 function fallIntoDarkness() {
   let darkness = 0;
-  const interval = setInterval(() =>
+  const interval = setInterval(() => {
+    ctx.fillStyle = `rgba(0, 0, 0, 0.1)`;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    darkness += 0.05;
+    if (darkness > 3) {
+      clearInterval(interval);
+      wakeInBedroom();
+    }
+  }, 100);
+}
+
+function wakeInBedroom() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const messages = [
+    "You wake up in your bed. Breathing hard.",
+    "You're safe. You're home.",
+    "You glance at your computer...",
+    "MindMasterV6.66 is still running."
+  ];
+
+  let i = 0;
+  const typer = setInterval(() => {
+    if (i < messages.length) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "green";
+      ctx.font = "18px monospace";
+      ctx.fillText(messages[i], 120, 200);
+      i++;
+    } else {
+      clearInterval(typer);
+    }
+  }, 2500);
+}
+
+// ---- Initialization ----
+window.onload = () => {
+  wakeupText.textContent = wakeupLines[0];
+  wakeupScene.style.display = "flex";
+};
