@@ -1,0 +1,57 @@
+﻿body {
+  background: black;
+  color: green;
+  font-family: monospace;
+  margin: 0;
+  overflow: hidden;
+}
+
+
+canvas {
+  display: block;
+  margin: 0 auto;
+  background: black;
+}
+
+
+#note {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: red;
+  display: none;
+  font-size: 1.2em;
+  z-index: 5;
+}
+
+
+#introScene {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: black;
+  color: green;
+  font-size: 1.4em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+
+#surveyOptions {
+  margin-top: 20px;
+  display: flex;
+  gap: 20px;
+}
+
+
+.choiceBtn {
+  background: transparent;
+  color: lime;
+  border: 1px solid lime;
+  padding: 10px 20px;
+  font-family: monospace;
+  cursor: pointer;
+}
